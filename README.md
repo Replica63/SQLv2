@@ -37,11 +37,36 @@
 Найдите фильмы, которые ни разу не брали в аренду.
 
 ### Решение 1
+```
+USE sakila;
+SELECT staff.first_name, staff.last_name, city.city, COUNT(customer.customer_id) as total_customers
+FROM staff
+JOIN store ON staff.store_id = store.store_id
+JOIN address ON store.address_id = address.address_id
+JOIN city ON address.city_id = city.city_id
+JOIN customer ON store.store_id = customer.store_id
+GROUP BY staff.first_name, staff.last_name, city.city
+HAVING COUNT(customer.customer_id) > 300;
+```
 ![alt text](https://github.com/Replica63/SQLv2/blob/main/img/1.png)
 
 ### Решение 2
+```
+USE sakila;
+SELECT COUNT(*) 
+FROM film 
+WHERE length > (SELECT AVG(length) FROM film);
+```
 ![alt text](https://github.com/Replica63/SQLv2/blob/main/img/2.png)
 
 ### Решение 3
-
+```
+USE sakila;
+SELECT YEAR(payment_date) AS year, MONTH(payment_date) AS month, COUNT(DISTINCT rental.rental_id) as rental_count, SUM(amount) as total_payment
+FROM payment
+JOIN rental ON payment.rental_id = rental.rental_id
+GROUP BY year, month
+ORDER BY total_payment DESC
+LIMIT 1;
+```
 ![alt text](https://github.com/Replica63/SQLv2/blob/main/img/3.png)
